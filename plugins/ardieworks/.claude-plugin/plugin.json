@@ -1,0 +1,8 @@
+{
+  "name": "ardieworks",
+  "description": "ArdieWorks — agents and skills for building, previewing, and shipping the ardiejohnson.com app portfolio. Build with frontend-builder/backend-supabase, open previews, review, promote, and launch new apps end-to-end.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Ardie Johnson"
+  }
+}
