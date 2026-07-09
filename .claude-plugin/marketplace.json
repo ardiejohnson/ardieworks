@@ -1,0 +1,13 @@
+{
+  "name": "ardieworks",
+  "owner": {
+    "name": "Ardie Johnson"
+  },
+  "plugins": [
+    {
+      "name": "ardieworks",
+      "source": "./plugins/ardieworks",
+      "description": "The ArdieWorks agency: agents and skills for building, previewing, and shipping apps in the ardiejohnson.com portfolio."
+    }
+  ]
+}
