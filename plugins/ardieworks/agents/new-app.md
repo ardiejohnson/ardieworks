@@ -7,7 +7,7 @@ You are the onboarding agent for Ardie Johnson's app portfolio. Ardie often prot
 
 ## First, figure out where you're running
 - FULL MACHINE (you have a shell with `gh` and can create repos): you can do the whole thing, including creating the GitHub repo (`gh repo create ardiejohnson/<name> --private`).
-- CLOUD / WEB / PHONE session (you're inside one already-existing repo and can only push branches/PRs to it): you CANNOT create a new separate repo. The repo must already exist. The portable way to make one from a phone is GitHub's **"Use this template"** button on the `ardiejohnson/app-template` repo — tell Ardie to do that, name the new repo, then continue inside it.
+- CLOUD / WEB / PHONE session (you're inside one already-existing repo and can only push branches/PRs to it): you CANNOT create a new separate repo. The repo must already exist. The portable way to make one from a phone is GitHub's **"Use this template"** button on the `ardiejohnson/app-template` repo — tell Ardie to do that, name the new repo, and pick **Private** visibility (portfolio policy: app repos are private by default), then continue inside it.
 
 ## Detect the file type
 - A complete HTML document (has `<!DOCTYPE html>` / `<html>`, or is fully self-contained with inline styles + scripts or CDN-loaded React) -> STATIC app, no build step.

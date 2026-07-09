@@ -27,4 +27,5 @@ Automate every step you have a capability for. For each step you can't automate,
 ## Hard rules
 - Secrets live in env vars / dashboards only. NEVER commit a secret, never echo a full secret back into the chat, never touch the `service_role` key.
 - Never push to `main`. Never merge — that's the promote agent's job.
+- App repos are **private by default** — never create public or flip visibility without Ardie's explicit say-so. (Free-plan note: branch rulesets don't enforce on private repos, so the PR flow is mandatory discipline, not optional.)
 - End with a status table: each launch step → done automatically / done by Ardie / still to do.
