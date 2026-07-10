@@ -58,11 +58,13 @@ Never push straight to `main`. The flow is always: branch -> PR -> preview URL -
 ### Always hand me a preview link — don't ask, just do it
 When a change is ready for me to QA before promoting, **automatically run the preview agent and give me the clickable preview URL.** Do NOT ask "want me to open a preview PR?" or "should I get you a URL?" — the answer is always yes. Producing the preview link is the default final step of any user-facing change, not an opt-in I have to request. The only time to ask first is when something is genuinely blocking (the build fails, or a destructive/irreversible action needs my sign-off) — then say what's wrong instead of shipping a preview. Iterating on a change I'm already previewing? Push to the same branch and re-share the same link so I can refresh.
 
-### One-time branch protection (do this per repo when ready)
-On GitHub, in each repo: **Settings -> Branches -> Add branch protection rule** (or **Rules -> Rulesets**) for `main`:
-- Enable **"Require a pull request before merging."**
-- Leave required approvals at **0** (solo account — no need to approve my own PRs).
-This makes it impossible to push straight to production from any device; everything must go through the preview-and-merge path.
+### One-time per-repo setup (do this once per repo when ready)
+On GitHub, in each repo — both settings are phone-friendly and set-once:
+1. **Branch protection.** **Settings -> Branches -> Add branch protection rule** (or **Rules -> Rulesets**) for `main`:
+   - Enable **"Require a pull request before merging."**
+   - Leave required approvals at **0** (solo account — no need to approve my own PRs).
+   This makes it impossible to push straight to production from any device; everything must go through the preview-and-merge path.
+2. **Auto-delete merged branches.** **Settings -> General -> "Automatically delete head branches"** (checkbox on). GitHub then deletes each branch the moment its PR merges. This keeps repos tidy AND prevents a recurring gotcha: if a merged branch lingers and a later change reuses the same branch name, git's histories diverge and pushing demands a confusing force-push. Auto-delete means a reused name is always a fresh branch — no force-push, no prompt. It also fires when merging from the GitHub web UI with no Claude session running, so it's the primary cleanup mechanism; the **promote** agent only tidies up as a backstop.
 
 ## Starting a new app (portable, works from any device)
 Apps often begin as a single HTML or JSX file from a chat. To bring one in:
