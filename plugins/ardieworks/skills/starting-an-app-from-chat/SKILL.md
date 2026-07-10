@@ -31,8 +31,10 @@ If the session can't create repos, one manual step remains — make the repo:
 2. Open a Claude Code session on the new repo.
 3. First message: paste the prototype code and say *"new-app: onboard this, then launch and open a preview PR."*
 
-## Removing the last friction (one-time setup)
-To make the fast path work from the **phone** too, add a GitHub personal access token (repo scope) to the claude.ai/code environment variables, alongside `SUPABASE_ACCESS_TOKEN` and `VERCEL_TOKEN`. Then repo creation, hosting, and backend all run from any device — the manual repo step disappears.
+## Why the fast path is laptop-only (a security boundary, not an oversight)
+The fully-automated path needs credentials (GitHub create token, Supabase, Vercel). On the **laptop** those live in the shell profile and Claude's MCP config — proper credential storage. On **claude.ai/code (web)** the only place to set values is the environment's "Environment variables" field, which is **plaintext and explicitly not for secrets** (the UI warns: "visible to anyone using this environment — don't add secrets or credentials"). So do NOT put account tokens there.
+
+Result: run the fully-automated `launch` from the **laptop**; from **phone/web**, use the portable path above (one manual repo-create step, then the agents take over). If a real secrets store appears in Claude Code on the web later, revisit this — until then, laptop is where token automation lives.
 
 ## Rules carried in from the rest of ArdieWorks
 - App repos are **private by default** (see the visibility policy in CLAUDE.md).
