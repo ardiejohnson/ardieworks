@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Code_Remote__list_repos",
+      "mcp__Claude_Code_Remote__add_repo",
+      "mcp__Claude_Code_Remote__register_repo_root",
+      "Bash(git clone *)",
+      "Bash(git -C * rev-parse *)",
+      "Bash(git -C * log *)",
+      "Bash(git -C * diff *)"
+    ]
+  }
+}
