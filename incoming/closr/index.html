@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Closr — Overnight Shutdown</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+  }
+
+  .home-strip {
+    background: #f3f4f6;
+    padding: 12px 16px 4px;
+  }
+
+  .home-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #FFFFFF;
+    border: 1px solid #E3E7EC;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1B2330;
+    text-decoration: none;
+  }
+
+  @media print {
+    .home-strip, .home-button { display: none !important; }
+  }
+
+  .app {
+    max-width: 560px;
+    margin: auto;
+    background: white;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #2563eb;
+    color: white;
+    padding: 20px;
+    border-radius: 0 0 22px 22px;
+  }
+
+  header h1 {
+    margin: 0;
+    font-size: 24px;
+  }
+
+  header p {
+    margin: 6px 0 0;
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  main {
+    padding: 16px;
+  }
+
+  .nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  button {
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .blue { background: #2563eb; color: white; }
+  .gray { background: #e5e7eb; color: #111827; }
+  .red { background: #fee2e2; color: #dc2626; }
+  .yellow { background: #fef3c7; color: #92400e; }
+
+  .card {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  label {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #d1d5db;
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .hidden { display: none; }
+
+  .status {
+    display: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .good {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+  }
+
+  .bad {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+  }
+
+  .small {
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  .location-card, .record, .task-row {
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 10px;
+    background: #f9fafb;
+  }
+
+  .location-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 10px;
+  }
+
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .proof-grid img, .proof-grid video {
+    width: 100%;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: #111827;
+    display: block;
+  }
+
+  .proof-cell { position: relative; }
+
+  .video-badge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: rgba(17,24,39,0.75);
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  .check-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .check-item:last-child {
+    border-bottom: none;
+  }
+
+  .check-item input {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+</style>
+</head>
+
+<body>
+<div class="home-strip">
+  <a class="home-button" href="https://ardiejohnson.com" aria-label="Back to ardiejohnson.com">&larr; ardiejohnson.com</a>
+</div>
+
+<div class="app">
+  <header>
+    <h1>Closr</h1>
+    <p>Overnight shutdown — checklist, photo &amp; video proof, sign-off</p>
+  </header>
+
+  <main>
+    <div id="status" class="status"></div>
+
+    <div class="nav">
+      <button class="blue" onclick="showChecklist()">Checklist</button>
+      <button class="gray" onclick="showLocations()">Locations</button>
+    </div>
+
+    <!-- CHECKLIST SCREEN -->
+    <section id="checklistScreen">
+      <div class="card">
+        <label>Employee Name</label>
+        <input id="employeeName" placeholder="Example: Alex">
+
+        <label>Choose Location</label>
+        <select id="activeLocation" onchange="loadChecklistForLocation()"></select>
+
+        <div id="activeLocationInfo"></div>
+      </div>
+
+      <div class="card">
+        <label>Checklist Items</label>
+        <div id="checklistItems"></div>
+      </div>
+
+      <div class="card">
+        <label>Proof Photos &amp; Videos</label>
+        <p class="small">Photos, or videos up to 10 seconds. On a phone this opens your camera or gallery.</p>
+        <input id="proofMedia" type="file" accept="image/*,video/*" multiple onchange="handleProofSelection()">
+        <div id="proofPreview" class="proof-grid"></div>
+      </div>
+
+      <div class="card">
+        <label>Notes / Issues</label>
+        <textarea id="shutdownNotes" rows="3" placeholder="Anything unusual?"></textarea>
+
+        <label>Signature / Initials</label>
+        <input id="signature" placeholder="Example: AJ">
+
+        <button class="blue" onclick="completeShutdown()">Complete Shutdown</button>
+        <button class="gray" onclick="exportRecords()">Export Records</button>
+        <button class="red" onclick="clearRecords()">Clear Records</button>
+      </div>
+
+      <div class="card">
+        <label>Saved Records</label>
+        <div id="records"></div>
+        <p id="storageInfo" class="small"></p>
+        <p class="small">Records and media are saved on this device, in this browser. Clearing the browser's site data deletes them.</p>
+      </div>
+    </section>
+
+    <!-- LOCATIONS SCREEN -->
+    <section id="locationsScreen" class="hidden">
+      <div class="card">
+        <h2>Add Location</h2>
+
+        <label>Location Name</label>
+        <input id="newLocationName" placeholder="Example: Across Street Yard">
+
+        <label>Location Instructions</label>
+        <textarea id="newLocationNotes" rows="3" placeholder="What should Alex inspect here?"></textarea>
+
+        <label>Attach Location Image</label>
+        <input id="newLocationImage" type="file" accept="image/*">
+
+        <button class="blue" onclick="addLocation()">Add Location</button>
+      </div>
+
+      <div class="card">
+        <h2>Add Checklist Item</h2>
+
+        <label>Choose Location</label>
+        <select id="taskLocation"></select>
+
+        <label>Checklist Item</label>
+        <input id="newTaskTitle" placeholder="Example: Lock gate">
+
+        <label>Item Instructions</label>
+        <textarea id="newTaskDetail" rows="2" placeholder="Example: Check the padlock and take photo."></textarea>
+
+        <button class="blue" onclick="addTask()">Add Item to Location</button>
+      </div>
+
+      <div class="card">
+        <h2>Manage Locations</h2>
+        <div id="locationsList"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+var LOC_KEY = "closr_locations_v1";
+var REC_KEY = "closr_records_v1";
+var MAX_VIDEO_SECONDS = 10;
+var DB_NAME = "closr_media_v1";
+
+// Media files (photos and videos) live in IndexedDB, not localStorage —
+// localStorage caps out around 5 MB, far too small for even one video.
+var dbPromise = null;
+
+function openDb() {
+  if (dbPromise) return dbPromise;
+
+  dbPromise = new Promise(function(resolve, reject) {
+    var request = indexedDB.open(DB_NAME, 1);
+
+    request.onupgradeneeded = function() {
+      request.result.createObjectStore("media", { keyPath: "id" });
+    };
+
+    request.onsuccess = function() { resolve(request.result); };
+    request.onerror = function() { reject(request.error); };
+  });
+
+  return dbPromise;
+}
+
+function saveMediaFile(file) {
+  var id = safeId();
+
+  return openDb().then(function(db) {
+    return new Promise(function(resolve, reject) {
+      var tx = db.transaction("media", "readwrite");
+      tx.objectStore("media").put({ id: id, type: file.type, blob: file });
+      tx.oncomplete = function() { resolve(id); };
+      tx.onerror = function() { reject(tx.error); };
+    });
+  });
+}
+
+function getMediaRecord(id) {
+  if (!id) return Promise.resolve(null);
+
+  return openDb().then(function(db) {
+    return new Promise(function(resolve) {
+      var request = db.transaction("media", "readonly").objectStore("media").get(id);
+      request.onsuccess = function() { resolve(request.result || null); };
+      request.onerror = function() { resolve(null); };
+    });
+  });
+}
+
+function deleteMediaIds(ids) {
+  if (!ids || !ids.length) return Promise.resolve();
+
+  return openDb().then(function(db) {
+    return new Promise(function(resolve) {
+      var tx = db.transaction("media", "readwrite");
+      var store = tx.objectStore("media");
+      for (var i = 0; i < ids.length; i++) {
+        store.delete(ids[i]);
+        if (mediaUrlCache[ids[i]]) {
+          URL.revokeObjectURL(mediaUrlCache[ids[i]].url);
+          delete mediaUrlCache[ids[i]];
+        }
+      }
+      tx.oncomplete = function() { resolve(); };
+      tx.onerror = function() { resolve(); };
+    });
+  });
+}
+
+var mediaUrlCache = {};
+
+function getMediaUrl(id) {
+  if (!id) return Promise.resolve(null);
+  if (mediaUrlCache[id]) return Promise.resolve(mediaUrlCache[id]);
+
+  return getMediaRecord(id).then(function(record) {
+    if (!record || !record.blob) return null;
+    var entry = { url: URL.createObjectURL(record.blob), type: record.type || "" };
+    mediaUrlCache[id] = entry;
+    return entry;
+  });
+}
+
+function mediaElementHtml(entry) {
+  if (!entry) return "";
+
+  if (entry.type.indexOf("video") === 0) {
+    return '<div class="proof-cell"><video src="' + entry.url + '" controls muted playsinline preload="metadata"></video><span class="video-badge">VIDEO</span></div>';
+  }
+
+  return '<div class="proof-cell"><img src="' + entry.url + '"></div>';
+}
+
+function fillMediaGrid(container, ids) {
+  container.innerHTML = "";
+
+  var jobs = [];
+  for (var i = 0; i < (ids || []).length; i++) jobs.push(getMediaUrl(ids[i]));
+
+  Promise.all(jobs).then(function(entries) {
+    var html = "";
+    for (var i = 0; i < entries.length; i++) html += mediaElementHtml(entries[i]);
+    container.innerHTML = html || "";
+  });
+}
+
+function getVideoDuration(file) {
+  return new Promise(function(resolve) {
+    var url = URL.createObjectURL(file);
+    var video = document.createElement("video");
+    video.preload = "metadata";
+
+    video.onloadedmetadata = function() {
+      var duration = video.duration;
+      URL.revokeObjectURL(url);
+      resolve(isFinite(duration) ? duration : null);
+    };
+
+    video.onerror = function() {
+      URL.revokeObjectURL(url);
+      resolve(null);
+    };
+
+    video.src = url;
+  });
+}
+
+function safeId() {
+  return "id_" + new Date().getTime() + "_" + Math.floor(Math.random() * 1000000);
+}
+
+function starterLocations() {
+  return [
+    {
+      id: safeId(),
+      name: "Across Street Yard",
+      notes: "Check gate, equipment, loose items, pallets, and yard security.",
+      imageId: "",
+      tasks: [
+        { id: safeId(), title: "Gate locked", detail: "Confirm all gates are closed and locked." },
+        { id: safeId(), title: "Equipment powered off", detail: "Forklifts, chargers, lights, and machines are safe." },
+        { id: safeId(), title: "Yard clear", detail: "No loose items, hazards, or open containers." }
+      ]
+    }
+  ];
+}
+
+function getLocations() {
+  var data = localStorage.getItem(LOC_KEY);
+  var locations;
+
+  try {
+    locations = data ? JSON.parse(data) : null;
+  } catch(e) {
+    locations = null;
+  }
+
+  if (!locations || !locations.length) {
+    locations = starterLocations();
+    localStorage.setItem(LOC_KEY, JSON.stringify(locations));
+  }
+
+  for (var i = 0; i < locations.length; i++) {
+    if (!locations[i].tasks) locations[i].tasks = [];
+  }
+
+  return locations;
+}
+
+function saveLocations(locations) {
+  localStorage.setItem(LOC_KEY, JSON.stringify(locations));
+  refreshApp();
+}
+
+function getRecords() {
+  try {
+    return JSON.parse(localStorage.getItem(REC_KEY) || "[]");
+  } catch(e) {
+    return [];
+  }
+}
+
+function htmlEscape(text) {
+  return String(text || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function showStatus(message, type) {
+  var box = document.getElementById("status");
+  box.innerHTML = message;
+  box.className = "status " + type;
+  window.scrollTo(0, 0);
+}
+
+function showChecklist() {
+  document.getElementById("checklistScreen").className = "";
+  document.getElementById("locationsScreen").className = "hidden";
+}
+
+function showLocations() {
+  document.getElementById("checklistScreen").className = "hidden";
+  document.getElementById("locationsScreen").className = "";
+}
+
+function addLocation() {
+  var name = document.getElementById("newLocationName").value.trim();
+  var notes = document.getElementById("newLocationNotes").value.trim();
+  var file = document.getElementById("newLocationImage").files[0];
+
+  if (!name) {
+    showStatus("Add a location name first.", "bad");
+    return;
+  }
+
+  var savedImage = file ? saveMediaFile(file) : Promise.resolve("");
+
+  savedImage.then(function(imageId) {
+    var locations = getLocations();
+
+    locations.push({
+      id: safeId(),
+      name: name,
+      notes: notes,
+      imageId: imageId,
+      tasks: []
+    });
+
+    saveLocations(locations);
+
+    document.getElementById("newLocationName").value = "";
+    document.getElementById("newLocationNotes").value = "";
+    document.getElementById("newLocationImage").value = "";
+
+    showStatus("Location added. Now add checklist items to it.", "good");
+    showLocations();
+  });
+}
+
+function deleteLocation(id) {
+  var locations = getLocations();
+
+  if (locations.length <= 1) {
+    showStatus("You need at least one location.", "bad");
+    return;
+  }
+
+  var keep = [];
+  var removedImageIds = [];
+
+  for (var i = 0; i < locations.length; i++) {
+    if (locations[i].id !== id) {
+      keep.push(locations[i]);
+    } else if (locations[i].imageId) {
+      removedImageIds.push(locations[i].imageId);
+    }
+  }
+
+  deleteMediaIds(removedImageIds).then(function() {
+    saveLocations(keep);
+    showStatus("Location deleted.", "good");
+  });
+}
+
+function editLocation(id) {
+  var locations = getLocations();
+
+  for (var i = 0; i < locations.length; i++) {
+    if (locations[i].id === id) {
+      var newName = prompt("Location name:", locations[i].name);
+      if (newName === null) return;
+
+      var newNotes = prompt("Location instructions:", locations[i].notes || "");
+      if (newNotes === null) return;
+
+      locations[i].name = newName.trim() || locations[i].name;
+      locations[i].notes = newNotes.trim();
+    }
+  }
+
+  saveLocations(locations);
+  showStatus("Location updated.", "good");
+}
+
+function replaceLocationImage(id, input) {
+  var file = input.files[0];
+  if (!file) return;
+
+  saveMediaFile(file).then(function(imageId) {
+    var locations = getLocations();
+    var oldIds = [];
+
+    for (var i = 0; i < locations.length; i++) {
+      if (locations[i].id === id) {
+        if (locations[i].imageId) oldIds.push(locations[i].imageId);
+        locations[i].imageId = imageId;
+      }
+    }
+
+    deleteMediaIds(oldIds).then(function() {
+      saveLocations(locations);
+      showStatus("Location image updated.", "good");
+    });
+  });
+}
+
+function addTask() {
+  var locationId = document.getElementById("taskLocation").value;
+  var title = document.getElementById("newTaskTitle").value.trim();
+  var detail = document.getElementById("newTaskDetail").value.trim();
+
+  if (!title) {
+    showStatus("Add a checklist item first.", "bad");
+    return;
+  }
+
+  var locations = getLocations();
+
+  for (var i = 0; i < locations.length; i++) {
+    if (locations[i].id === locationId) {
+      locations[i].tasks.push({
+        id: safeId(),
+        title: title,
+        detail: detail
+      });
+    }
+  }
+
+  saveLocations(locations);
+
+  document.getElementById("newTaskTitle").value = "";
+  document.getElementById("newTaskDetail").value = "";
+
+  showStatus("Checklist item added.", "good");
+  showLocations();
+}
+
+function deleteTask(locationId, taskId) {
+  var locations = getLocations();
+
+  for (var i = 0; i < locations.length; i++) {
+    if (locations[i].id === locationId) {
+      var newTasks = [];
+      for (var j = 0; j < locations[i].tasks.length; j++) {
+        if (locations[i].tasks[j].id !== taskId) newTasks.push(locations[i].tasks[j]);
+      }
+      locations[i].tasks = newTasks;
+    }
+  }
+
+  saveLocations(locations);
+  showStatus("Checklist item deleted.", "good");
+}
+
+function refreshDropdowns() {
+  var locations = getLocations();
+  var active = document.getElementById("activeLocation");
+  var taskSelect = document.getElementById("taskLocation");
+
+  var currentActive = active.value;
+  var currentTask = taskSelect.value;
+
+  var options = "";
+  for (var i = 0; i < locations.length; i++) {
+    options += '<option value="' + locations[i].id + '">' + htmlEscape(locations[i].name) + '</option>';
+  }
+
+  active.innerHTML = options;
+  taskSelect.innerHTML = options;
+
+  active.value = currentActive || locations[0].id;
+  taskSelect.value = currentTask || locations[0].id;
+
+  if (!active.value) active.value = locations[0].id;
+  if (!taskSelect.value) taskSelect.value = locations[0].id;
+}
+
+function loadChecklistForLocation() {
+  var locations = getLocations();
+  var selectedId = document.getElementById("activeLocation").value;
+  var info = document.getElementById("activeLocationInfo");
+  var list = document.getElementById("checklistItems");
+  var location = null;
+
+  for (var i = 0; i < locations.length; i++) {
+    if (locations[i].id === selectedId) location = locations[i];
+  }
+
+  if (!location) {
+    info.innerHTML = "";
+    list.innerHTML = "<p class='small'>No location selected.</p>";
+    return;
+  }
+
+  var notesHtml = location.notes ? "<p class='small'><b>Instructions:</b> " + htmlEscape(location.notes) + "</p>" : "";
+  info.innerHTML = notesHtml;
+
+  if (location.imageId) {
+    getMediaUrl(location.imageId).then(function(entry) {
+      if (entry) info.innerHTML = '<img class="location-img" src="' + entry.url + '">' + notesHtml;
+    });
+  }
+
+  if (!location.tasks.length) {
+    list.innerHTML = "<p class='small'>No checklist items yet. Go to Locations and add checklist items.</p>";
+    return;
+  }
+
+  var html = "";
+  for (var t = 0; t < location.tasks.length; t++) {
+    html += '<div class="check-item">';
+    html += '<input type="checkbox" class="taskCheck" data-title="' + htmlEscape(location.tasks[t].title) + '">';
+    html += '<div><b>' + htmlEscape(location.tasks[t].title) + '</b><br>';
+    html += '<span class="small">' + htmlEscape(location.tasks[t].detail) + '</span></div>';
+    html += '</div>';
+  }
+
+  list.innerHTML = html;
+}
+
+function renderLocationsList() {
+  var locations = getLocations();
+  var box = document.getElementById("locationsList");
+  var html = "";
+
+  for (var i = 0; i < locations.length; i++) {
+    var loc = locations[i];
+
+    html += '<div class="location-card">';
+    html += '<div id="locimg_' + loc.id + '"><div class="location-img" style="display:flex;align-items:center;justify-content:center;color:#6b7280;">No image attached</div></div>';
+
+    html += '<b>' + htmlEscape(loc.name) + '</b><br>';
+    html += '<span class="small">' + htmlEscape(loc.notes || "No instructions yet.") + '</span>';
+
+    html += '<label style="margin-top:12px;">Replace Location Image</label>';
+    html += '<input type="file" accept="image/*" onchange="replaceLocationImage(\'' + loc.id + '\', this)">';
+
+    html += '<div class="two">';
+    html += '<button class="yellow" onclick="editLocation(\'' + loc.id + '\')">Edit</button>';
+    html += '<button class="red" onclick="deleteLocation(\'' + loc.id + '\')">Delete</button>';
+    html += '</div>';
+
+    html += '<h3>Checklist Items</h3>';
+
+    if (!loc.tasks.length) {
+      html += '<p class="small">No checklist items yet.</p>';
+    } else {
+      for (var j = 0; j < loc.tasks.length; j++) {
+        html += '<div class="task-row">';
+        html += '<b>' + htmlEscape(loc.tasks[j].title) + '</b><br>';
+        html += '<span class="small">' + htmlEscape(loc.tasks[j].detail) + '</span>';
+        html += '<button class="red" onclick="deleteTask(\'' + loc.id + '\', \'' + loc.tasks[j].id + '\')">Delete Item</button>';
+        html += '</div>';
+      }
+    }
+
+    html += '</div>';
+  }
+
+  box.innerHTML = html;
+
+  for (var k = 0; k < locations.length; k++) {
+    (function(loc) {
+      if (!loc.imageId) return;
+      getMediaUrl(loc.imageId).then(function(entry) {
+        var slot = document.getElementById("locimg_" + loc.id);
+        if (entry && slot) slot.innerHTML = '<img class="location-img" src="' + entry.url + '">';
+      });
+    })(locations[k]);
+  }
+}
+
+// Files that passed validation and are waiting to be saved with the record.
+var pendingProof = [];
+
+function handleProofSelection() {
+  var files = document.getElementById("proofMedia").files;
+  var preview = document.getElementById("proofPreview");
+  preview.innerHTML = "";
+  pendingProof = [];
+
+  var checks = [];
+
+  for (var i = 0; i < files.length; i++) {
+    (function(file) {
+      if (file.type.indexOf("video") === 0) {
+        checks.push(getVideoDuration(file).then(function(duration) {
+          // duration can be unreadable on some phones — allow those rather than block a real 5-second clip
+          if (duration !== null && duration > MAX_VIDEO_SECONDS + 0.5) {
+            return { file: file, ok: false, reason: Math.round(duration) + "s long" };
+          }
+          return { file: file, ok: true };
+        }));
+      } else {
+        checks.push(Promise.resolve({ file: file, ok: true }));
+      }
+    })(files[i]);
+  }
+
+  Promise.all(checks).then(function(results) {
+    var rejected = [];
+    var html = "";
+
+    for (var i = 0; i < results.length; i++) {
+      if (!results[i].ok) {
+        rejected.push(htmlEscape(results[i].file.name) + " (" + results[i].reason + ")");
+        continue;
+      }
+
+      pendingProof.push(results[i].file);
+      var url = URL.createObjectURL(results[i].file);
+
+      if (results[i].file.type.indexOf("video") === 0) {
+        html += '<div class="proof-cell"><video src="' + url + '" muted playsinline preload="metadata"></video><span class="video-badge">VIDEO</span></div>';
+      } else {
+        html += '<div class="proof-cell"><img src="' + url + '"></div>';
+      }
+    }
+
+    preview.innerHTML = html;
+
+    if (rejected.length) {
+      showStatus("Videos must be " + MAX_VIDEO_SECONDS + " seconds or less. Skipped: " + rejected.join(", "), "bad");
+    } else if (pendingProof.length) {
+      showStatus(pendingProof.length + " file(s) ready to attach.", "good");
+    }
+  });
+}
+
+function completeShutdown() {
+  var employee = document.getElementById("employeeName").value.trim();
+  var signature = document.getElementById("signature").value.trim();
+  var notes = document.getElementById("shutdownNotes").value.trim();
+  var selectedId = document.getElementById("activeLocation").value;
+  var checks = document.getElementsByClassName("taskCheck");
+
+  if (!employee) {
+    showStatus("Employee name is required.", "bad");
+    return;
+  }
+
+  if (!checks.length) {
+    showStatus("This location needs checklist items first.", "bad");
+    return;
+  }
+
+  var completed = [];
+  for (var i = 0; i < checks.length; i++) {
+    if (!checks[i].checked) {
+      showStatus("All checklist items must be checked before sign-off.", "bad");
+      return;
+    }
+    completed.push(checks[i].getAttribute("data-title"));
+  }
+
+  if (!pendingProof.length) {
+    showStatus("At least one proof photo or video is required.", "bad");
+    return;
+  }
+
+  if (!signature) {
+    showStatus("Signature or initials are required.", "bad");
+    return;
+  }
+
+  var locations = getLocations();
+  var locName = "Unknown";
+
+  for (var j = 0; j < locations.length; j++) {
+    if (locations[j].id === selectedId) locName = locations[j].name;
+  }
+
+  showStatus("Saving…", "good");
+
+  var saves = [];
+  for (var k = 0; k < pendingProof.length; k++) saves.push(saveMediaFile(pendingProof[k]));
+
+  Promise.all(saves).then(function(mediaIds) {
+    var records = getRecords();
+
+    records.unshift({
+      id: safeId(),
+      employee: employee,
+      location: locName,
+      completed: completed,
+      mediaIds: mediaIds,
+      notes: notes,
+      signature: signature,
+      time: new Date().toLocaleString()
+    });
+
+    localStorage.setItem(REC_KEY, JSON.stringify(records));
+
+    document.getElementById("employeeName").value = "";
+    document.getElementById("signature").value = "";
+    document.getElementById("shutdownNotes").value = "";
+    document.getElementById("proofMedia").value = "";
+    document.getElementById("proofPreview").innerHTML = "";
+    pendingProof = [];
+
+    loadChecklistForLocation();
+    renderRecords();
+
+    showStatus("Shutdown completed and saved.", "good");
+  }).catch(function() {
+    showStatus("Could not save the media files. The device may be out of storage.", "bad");
+  });
+}
+
+function deleteRecord(recordId) {
+  if (!confirm("Delete this record and its photos/videos?")) return;
+
+  var records = getRecords();
+  var keep = [];
+  var removeIds = [];
+
+  for (var i = 0; i < records.length; i++) {
+    if (records[i].id !== recordId) {
+      keep.push(records[i]);
+    } else {
+      removeIds = records[i].mediaIds || [];
+    }
+  }
+
+  deleteMediaIds(removeIds).then(function() {
+    localStorage.setItem(REC_KEY, JSON.stringify(keep));
+    renderRecords();
+    showStatus("Record deleted.", "good");
+  });
+}
+
+function renderRecords() {
+  var records = getRecords();
+  var box = document.getElementById("records");
+
+  if (!records.length) {
+    box.innerHTML = "<p class='small'>No records yet.</p>";
+    updateStorageInfo();
+    return;
+  }
+
+  var html = "";
+  for (var i = 0; i < records.length; i++) {
+    var mediaCount = (records[i].mediaIds || []).length;
+    html += '<div class="record">';
+    html += '<b>' + htmlEscape(records[i].employee) + '</b> — ' + htmlEscape(records[i].location) + '<br>';
+    html += '<span class="small">' + htmlEscape(records[i].time) + '</span><br>';
+    html += 'Photos/videos: ' + mediaCount + '<br>';
+    html += 'Signature: ' + htmlEscape(records[i].signature) + '<br>';
+    html += 'Notes: ' + htmlEscape(records[i].notes || "None");
+    html += '<div class="proof-grid" id="recmedia_' + records[i].id + '"></div>';
+    html += '<button class="red" onclick="deleteRecord(\'' + records[i].id + '\')">Delete Record</button>';
+    html += '</div>';
+  }
+
+  box.innerHTML = html;
+
+  for (var j = 0; j < records.length; j++) {
+    var grid = document.getElementById("recmedia_" + records[j].id);
+    if (grid) fillMediaGrid(grid, records[j].mediaIds);
+  }
+
+  updateStorageInfo();
+}
+
+function updateStorageInfo() {
+  var info = document.getElementById("storageInfo");
+  if (!navigator.storage || !navigator.storage.estimate) {
+    info.innerHTML = "";
+    return;
+  }
+
+  navigator.storage.estimate().then(function(estimate) {
+    var usedMb = Math.round((estimate.usage || 0) / 1048576);
+    var totalMb = Math.round((estimate.quota || 0) / 1048576);
+    info.innerHTML = "Storage used: about " + usedMb + " MB of " + totalMb + " MB available.";
+  });
+}
+
+function exportRecords() {
+  var records = localStorage.getItem(REC_KEY) || "[]";
+  var blob = new Blob([records], { type: "application/json" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "closr-records.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  showStatus("Exported the record list. Photos and videos stay saved on this device.", "good");
+}
+
+function clearRecords() {
+  if (!confirm("Clear all saved records and their photos/videos?")) return;
+
+  var records = getRecords();
+  var allIds = [];
+  for (var i = 0; i < records.length; i++) {
+    allIds = allIds.concat(records[i].mediaIds || []);
+  }
+
+  deleteMediaIds(allIds).then(function() {
+    localStorage.removeItem(REC_KEY);
+    renderRecords();
+    showStatus("Records cleared.", "good");
+  });
+}
+
+function refreshApp() {
+  refreshDropdowns();
+  loadChecklistForLocation();
+  renderLocationsList();
+  renderRecords();
+}
+
+// Ask the browser to protect this site's data from automatic cleanup (best effort).
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist();
+}
+
+refreshApp();
+</script>
+</body>
+</html>
