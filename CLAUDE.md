@@ -22,6 +22,7 @@ One repo per deployed app. Repo names sometimes carry an `-app` suffix that the 
 | `svg-maker-app`     | svg-maker.ardiejohnson.com | repo has `-app`, subdomain doesn't                             |
 | `arcade`            | arcade.ardiejohnson.com    | Multi-game site; games live at sub-paths, e.g. /hoarder-patrol |
 | `artcoach`          | artcoach.ardiejohnson.com  | AI art critique coach; Vercel `/api` + Supabase (see README) |
+| `closr`             | closr.ardiejohnson.com     | Overnight shutdown checklist w/ photo & video proof (IndexedDB) |
 
 Note: `auction-app` is an older project, NOT deployed under this domain — ignore it.
 When in doubt about a subdomain, ask me rather than guessing — DNS is easy to get wrong.
