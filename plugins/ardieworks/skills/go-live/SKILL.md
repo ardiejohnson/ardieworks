@@ -16,7 +16,7 @@ Work through in order. Do not merge until the "Before merging" list is complete.
 
 ## After merging (the wiring)
 - [ ] Domain: Vercel project → Settings → Domains → add `<app>.ardiejohnson.com`
-- [ ] DNS: A record `<app>` → `76.76.21.21` (laptop: `~/.godaddy/add-subdomain.sh <app>`; otherwise GoDaddy dashboard). HTTPS is automatic after a few minutes
+- [ ] DNS: `CNAME <app>` → the per-project target from Vercel's Domains tab (laptop: `~/.godaddy/add-subdomain.sh <app> <target>`; otherwise GoDaddy dashboard). Add the domain in Vercel first so it shows you the target. HTTPS is automatic once Vercel sees the record. **Not** the old A record `76.76.21.21` — it resolves but no longer serves new domains, which reads as a stuck certificate
 - [ ] If Supabase: Authentication → URL Configuration → **Site URL** = `https://<app>.ardiejohnson.com` + add it to **Redirect URLs** (otherwise confirmation/reset emails point at localhost)
 - [ ] Branch protection on `main` (GitHub → Settings → Branches → require a pull request)
 - [ ] Homepage card: add the app to `ardiejohnson-com`'s `.apps` grid via its own PR — merge only after the domain resolves

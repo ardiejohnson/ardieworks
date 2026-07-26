@@ -19,7 +19,7 @@ Automate every step you have a capability for. For each step you can't automate,
 1. **Vercel project** — create/link a project for the repo (framework auto-detect; leave build settings default).
 2. **Backend (only if the app needs one)** — Supabase project; run every file in `supabase/migrations/` in order; set the auth **Site URL** and **Redirect URLs** to the production domain (`https://<app>.ardiejohnson.com`) from day one so confirmation and reset emails never point at localhost.
 3. **Env vars on Vercel** (all environments): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` (anon/publishable ONLY — never service_role), plus any server-side keys like `ANTHROPIC_API_KEY` (prefer linking the shared team variable over pasting a fresh copy).
-4. **Domain** — add `<app>.ardiejohnson.com` to the Vercel project; add the DNS A record `<app> → 76.76.21.21` (script on laptop, GoDaddy dashboard otherwise).
+4. **Domain** — add `<app>.ardiejohnson.com` to the Vercel project *first*, copy the per-project CNAME target Vercel shows, then create the DNS record `CNAME <app> → <target>` (`~/.godaddy/add-subdomain.sh <app> <target>` on the laptop, GoDaddy dashboard otherwise). The old A record `76.76.21.21` no longer serves newly added domains.
 5. **Branch protection** — require a pull request before merging on `main`.
 6. **Trigger a preview** — push a trivial commit to the working branch so Vercel builds a preview WITH the env vars, and hand Ardie the preview URL.
 7. **Homepage card** — remind (or delegate to preview agent) that the app needs a card in `ardiejohnson-com`'s `.apps` grid, shipped through that repo's own PR flow, merged only when the domain is live.

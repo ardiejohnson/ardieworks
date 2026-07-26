@@ -68,9 +68,9 @@ The subdomain follows `[appname].ardiejohnson.com`. Always confirm the exact nam
 1. Link + create the Vercel project: `npx vercel link --yes --project <name>` (from the repo), then deploy.
 2. Attach the subdomain to the project: `npx vercel domains add <name>.ardiejohnson.com <name>`.
 3. Add the DNS record automatically — **this is the step that used to be manual**:
-   `~/.godaddy/add-subdomain.sh <name>`  (creates an `A <name> → 76.76.21.21` record via the GoDaddy API).
+   `~/.godaddy/add-subdomain.sh <name> <cname-target>`  (creates a `CNAME <name> → <target>` record via the GoDaddy API). Add the domain in Vercel first and copy the target from the "DNS Change Recommended" note.
    - Creds live in `~/.godaddy/credentials` — **laptop-only, outside every git repo. Never print, commit, or move them.**
-   - Vercel then auto-issues HTTPS within a few minutes. Verify with `dig +short <name>.ardiejohnson.com` (expect `76.76.21.21`).
+   - Vercel then auto-issues HTTPS within a few minutes. Verify with `dig +short <name>.ardiejohnson.com` (expect the vercel-dns host, then Vercel IPs). The old `76.76.21.21` A record no longer serves newly added domains.
 
 **On a phone / web / cloud session (no CLI, no GoDaddy key):** you can't do hosting/DNS. Tell Ardie the one-time manual steps: import the repo into Vercel, attach the subdomain in the dashboard, and add the DNS record at GoDaddy. After that, every change ships through preview → promote like the rest of the portfolio.
 
