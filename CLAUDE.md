@@ -23,6 +23,7 @@ One repo per deployed app. Repo names sometimes carry an `-app` suffix that the 
 | `arcade`            | arcade.ardiejohnson.com    | Multi-game site; games live at sub-paths, e.g. /hoarder-patrol |
 | `artcoach`          | artcoach.ardiejohnson.com  | AI art critique coach; Vercel `/api` + Supabase (see README) |
 | `closr`             | closr.ardiejohnson.com     | Overnight shutdown checklist w/ photo & video proof (IndexedDB) |
+| `legacy`            | legacy.ardiejohnson.com    | Family memoir archive; password-gated, Supabase + `archive` edge function |
 
 Note: `auction-app` is an older project, NOT deployed under this domain — ignore it.
 When in doubt about a subdomain, ask me rather than guessing — DNS is easy to get wrong.
@@ -72,7 +73,7 @@ Apps often begin as a single HTML or JSX file from a chat. To bring one in:
 1. **Create the repo** — tap **"Use this template"** on `ardiejohnson/app-template` (github.com, works on phone) and name it (e.g. `moodboard`). The new repo is born with the agents + CLAUDE.md already inside. (On a laptop, the new-app agent can create the repo directly with `gh` instead.)
 2. **Open Claude Code** on the new repo and give the **new-app** agent your file — it detects HTML vs JSX, scaffolds the project, builds it, and adds the app to the table above.
 3. **Wire hosting once** — import the repo into Vercel, attach the subdomain, and turn on branch protection for `main` (Vercel's web dashboard is phone-friendly).
-   - **DNS is automated on the laptop.** The GoDaddy API is wired up, so from Ardie's laptop the subdomain's DNS record can be added with one command — `~/.godaddy/add-subdomain.sh <name>` (creates `A <name> → 76.76.21.21`; Vercel then issues HTTPS). Creds live in `~/.godaddy/credentials`, laptop-only and outside every git repo — never commit or move them. From a phone/web session this step is still manual in the GoDaddy dashboard.
+   - **DNS is automated on the laptop.** The GoDaddy API is wired up, so from Ardie's laptop the subdomain's DNS record can be added with one command — `~/.godaddy/add-subdomain.sh <name> <cname-target>` (creates `CNAME <name> → <target>`; Vercel then issues HTTPS). **Add the domain in Vercel first** (Settings → Domains) and copy the target it shows under "DNS Change Recommended" — Vercel gives each project its own DNS host and no longer routes new domains through the old shared A record `76.76.21.21`. That record still *resolves*, so getting this wrong looks like a stuck certificate rather than a misconfiguration. Creds live in `~/.godaddy/credentials`, laptop-only and outside every git repo — never commit or move them. From a phone/web session this step is still manual in the GoDaddy dashboard.
 After that it's a normal portfolio app: preview -> review -> promote, from anywhere.
 
 `app-template` is a one-time setup (see make-template.sh) — the GitHub template that makes new apps portable.
