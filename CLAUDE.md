@@ -24,8 +24,15 @@ One repo per deployed app. Repo names sometimes carry an `-app` suffix that the 
 | `artcoach`          | artcoach.ardiejohnson.com  | AI art critique coach; Vercel `/api` + Supabase (see README) |
 | `closr`             | closr.ardiejohnson.com     | Overnight shutdown checklist w/ photo & video proof (IndexedDB) |
 | `legacy`            | legacy.ardiejohnson.com    | Family memoir archive; password-gated, Supabase + `archive` edge function |
+| `switch`            | switch.ardiejohnson.com    | Marketing site for a smart-glass product; quote form via Vercel `/api` + Resend |
+| `los-oviedo-garage` | **losoviedo.com** (own apex) | Bilingual (EN/ES) marketing site for a used car dealership + service garage |
 
 Note: `auction-app` is an older project, NOT deployed under this domain — ignore it.
+Note: `los-oviedo-garage` is the one app NOT on an `ardiejohnson.com` subdomain — it's
+a client-facing site, so it lives on its own domain, `losoviedo.com` (registered in the
+same GoDaddy account). This is deliberate; don't "fix" it back to a subdomain. The old
+`losoviedo.ardiejohnson.com` and `www.losoviedo.com` both 308-redirect to the apex via
+`redirects()` in `next.config.mjs` — keep those rules so shared links never die.
 When in doubt about a subdomain, ask me rather than guessing — DNS is easy to get wrong.
 
 ## Stack
