@@ -67,6 +67,28 @@ Never push straight to `main`. The flow is always: branch -> PR -> preview URL -
 ### Always hand me a preview link — don't ask, just do it
 When a change is ready for me to QA before promoting, **automatically run the preview agent and give me the clickable preview URL.** Do NOT ask "want me to open a preview PR?" or "should I get you a URL?" — the answer is always yes. Producing the preview link is the default final step of any user-facing change, not an opt-in I have to request. The only time to ask first is when something is genuinely blocking (the build fails, or a destructive/irreversible action needs my sign-off) — then say what's wrong instead of shipping a preview. Iterating on a change I'm already previewing? Push to the same branch and re-share the same link so I can refresh.
 
+### When an app graduates to a staging tier (don't add a `dev` branch by default)
+No app repo uses a long-lived `dev`/`staging` branch, and that's on purpose. The Vercel
+**preview URL is already the intermediate stage** — every change gets QA'd on a live link
+before it merges to `main`. For static and frontend-only apps this is enough even as
+traffic grows; adding a `dev` branch would just be ceremony. **Default stays per-PR
+preview — don't add a `dev` branch.**
+
+An individual app graduates to a real staging tier only when **both** are true:
+1. It has **real external users** beyond me + a handful, AND
+2. It has a **backend where a bad deploy could lose or corrupt user data**.
+
+The gap per-PR previews don't cover is **data safety**: a preview frontend usually points
+at the *production* Supabase/API, so a migration or edge-function change can break live
+data even when the preview looks perfect. So at graduation the fix is to **separate the
+data, not the branch** — stand up a **staging Supabase project (or Supabase branching)** so
+migrations and edge functions are tested against throwaway data before they hit prod on
+merge. Frontend-only apps never need this.
+
+By this test today, **`legacy`** is the first candidate (memoir archive = irreplaceable
+data), **`artcoach`** next — but nothing requires it yet. Don't build staging infra
+speculatively; do it when an app crosses the bar above.
+
 ### One-time per-repo setup (do this once per repo when ready)
 On GitHub, in each repo — both settings are phone-friendly and set-once:
 1. **Branch protection.** **Settings -> Branches -> Add branch protection rule** (or **Rules -> Rulesets**) for `main`:
