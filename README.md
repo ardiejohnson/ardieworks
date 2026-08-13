@@ -9,7 +9,7 @@ distribution channel.
 ```
 ardieworks (this repo)  ← edit agents/skills/conventions HERE
  ├── Claude Code plugin  → installed once on the laptop, available in every project
- └── scripts/sync-template.sh → refreshes app-template, so new repos are born current
+ └── sync-template (GitHub Action + script) → refreshes app-template, so new repos are born current
 ```
 
 ## Install on the laptop (one time)
@@ -22,11 +22,14 @@ In any Claude Code session:
 ```
 
 After that, every project on the machine has the full agency (frontend-builder,
-backend-supabase, reviewer, preview, promote, new-app, launch) plus the
-go-live skill. To pick up updates later: `/plugin marketplace update ardieworks`.
+backend-supabase, reviewer, preview, promote, new-app, launch) plus all the
+skills. To pick up updates later: `/plugin marketplace update ardieworks`.
 
-Web and phone sessions get the agency from each repo's own `.claude/` folder —
-keep those fresh by running the template sync after meaningful changes here:
+Web and phone sessions get the agency from each repo's own `.claude/` folder.
+The `sync-template` GitHub Action keeps `app-template` fresh automatically —
+when canonical files change on `main` it opens a PR on app-template (needs the
+`TEMPLATE_SYNC_TOKEN` secret; see the workflow file for one-time setup). Manual
+fallback:
 
 ```
 ./scripts/sync-template.sh /path/to/app-template
@@ -38,17 +41,21 @@ keep those fresh by running the template sync after meaningful changes here:
 |---|---|
 | `CLAUDE.md` | Canonical portfolio conventions (stack, shipping rules, repo↔subdomain table) |
 | `plugins/ardieworks/agents/` | The agency: builder, backend, reviewer, preview, promote, new-app, **launch** |
-| `plugins/ardieworks/skills/go-live/` | The go-live checklist (born from the ArtCoach launch) |
+| `plugins/ardieworks/skills/` | The skills: **go-live**, **audit-app**, **starting-an-app-from-chat**, **portfolio-status**, **fewer-prompts** |
+| `template/` | Files every new app is born with: CI workflow, permissions allowlist, the HomeButton pill (React + static) |
 | `scripts/sync-template.sh` | Pushes canonical files into `app-template` |
+| `.github/workflows/sync-template.yml` | Auto-opens the app-template sync PR when canonical files change |
 
 ## The agents
 
-Build with **frontend-builder** / **backend-supabase** → **preview** (PR + preview URL)
-→ QA + **reviewer** → **promote** (merge → live). **new-app** onboards a loose
-HTML/JSX file into a repo; **launch** wires up hosting, backend, domain, and
-branch protection around it — automating whatever it has credentials for
-(Supabase MCP, `VERCEL_TOKEN`, the GoDaddy script) and printing a short manual
-checklist for the rest.
+Build with **frontend-builder** / **backend-supabase** → **preview** (PR + the
+actual preview URL, verified built) → QA + **reviewer** (real phone-size browser
+pass when Chromium is available) → **promote** (merge → live, deploy verified
+green). **new-app** onboards a loose HTML/JSX file into a repo; **launch** wires
+up hosting, backend, domain, and branch protection around it — automating
+whatever the session has capabilities for (Vercel/Supabase/GitHub MCP connectors
+in web sessions, tokens + the GoDaddy script on the laptop) and printing a short
+manual checklist for the rest.
 
 ## Rules that never change
 

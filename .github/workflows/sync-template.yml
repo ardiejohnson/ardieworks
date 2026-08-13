@@ -1,0 +1,73 @@
+# Keeps app-template automatically in sync with this repo (the canonical HQ).
+# When canonical files change on main, this opens/refreshes a PR on
+# ardiejohnson/app-template with the synced files — review and merge there.
+#
+# One-time setup (without it the workflow skips with a notice, nothing breaks):
+#   1. Create a fine-grained GitHub PAT with Contents:write + Pull requests:write
+#      on ardiejohnson/app-template.
+#   2. Add it to THIS repo as an Actions secret named TEMPLATE_SYNC_TOKEN
+#      (Settings -> Secrets and variables -> Actions).
+name: sync-template
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'CLAUDE.md'
+      - 'plugins/ardieworks/agents/**'
+      - 'plugins/ardieworks/skills/**'
+      - 'template/**'
+      - 'scripts/sync-template.sh'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for sync token
+        id: token
+        env:
+          TEMPLATE_SYNC_TOKEN: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+        run: |
+          if [ -z "$TEMPLATE_SYNC_TOKEN" ]; then
+            echo "::notice::TEMPLATE_SYNC_TOKEN secret not set — skipping auto-sync. Run scripts/sync-template.sh manually, or add the secret (see comments in this workflow file)."
+            echo "have_token=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "have_token=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.token.outputs.have_token == 'true'
+
+      - name: Clone app-template
+        if: steps.token.outputs.have_token == 'true'
+        env:
+          TEMPLATE_SYNC_TOKEN: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+        run: |
+          git clone "https://x-access-token:${TEMPLATE_SYNC_TOKEN}@github.com/ardiejohnson/app-template.git" /tmp/app-template
+
+      - name: Run the sync
+        if: steps.token.outputs.have_token == 'true'
+        run: ./scripts/sync-template.sh /tmp/app-template
+
+      - name: Open or refresh the sync PR
+        if: steps.token.outputs.have_token == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.TEMPLATE_SYNC_TOKEN }}
+        run: |
+          cd /tmp/app-template
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "app-template already up to date — nothing to sync."
+            exit 0
+          fi
+          git config user.name "ardieworks-sync"
+          git config user.email "ardiejohnson@gmail.com"
+          git checkout -B sync-ardieworks
+          git add -A
+          git commit -m "Sync agency from ardieworks (${GITHUB_SHA::7})"
+          git push -f origin sync-ardieworks
+          # One standing PR; force-pushing the branch refreshes it if it already exists.
+          gh pr create --repo ardiejohnson/app-template \
+            --base main --head sync-ardieworks \
+            --title "Sync agency from ardieworks" \
+            --body "Automated sync of agents, skills, CLAUDE.md, CI workflow, settings allowlist, and HomeButton from ardiejohnson/ardieworks@${GITHUB_SHA::7}. Review and merge so new apps are born current." \
+            2>/dev/null || echo "Sync PR already open — branch updated in place."
