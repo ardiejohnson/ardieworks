@@ -1,0 +1,16 @@
+<!-- The portfolio-standard back-to-home pill, static-app version.
+     Paste at the VERY TOP of <body>, above the app's own header, in normal
+     flow — never position:fixed. Swap the strip's background (#f5f8fb) for
+     the app's own background color so it blends in.
+     Canonical copy lives in the ardieworks repo (template/). -->
+<div class="home-strip" style="background:#f5f8fb">
+  <div style="max-width:1120px;margin:0 auto;padding:14px 20px 0">
+    <a href="https://ardiejohnson.com" aria-label="Back to ardiejohnson.com" class="home-button"
+       style="display:inline-flex;align-items:center;gap:6px;background:#FFFFFF;border:1px solid #E3E7EC;border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:700;color:#1B2330;text-decoration:none">
+      &larr; ardiejohnson.com
+    </a>
+  </div>
+</div>
+<style>
+  @media print { .home-strip, .home-button { display: none !important; } }
+</style>

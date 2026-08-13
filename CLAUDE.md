@@ -48,15 +48,20 @@ Non-negotiable for every `[appname].ardiejohnson.com` app — the **new-app** ag
 2. **A card on the apex homepage.** Add a live card for the app to the `ardiejohnson-com` repo's `index.html` (`.apps` grid). That's a separate deployed repo, so it ships through its own preview → promote flow.
 
 ## The agents
-Defined in `.claude/agents/` in this repo. Delegate to them by role:
+Canonical in the `ardieworks` repo under `plugins/ardieworks/agents/`; app repos carry a synced copy in `.claude/agents/`. Delegate to them by role:
 - **frontend-builder** — all UI and client-side feature work.
-- **backend-supabase** — schema, migrations, RLS, auth, storage (needs Supabase MCP on a full machine).
-- **reviewer** — read-only pre-ship check for broken builds, mobile issues, and exposed secrets.
-- **preview** — branch + commit + push + open a PR; Vercel builds a preview URL for QA. Does NOT go live.
-- **promote** — merges the approved PR into main; Vercel deploys to production. Works from any device.
+- **backend-supabase** — schema, migrations, RLS, auth, storage (via Supabase MCP — laptop config or the claude.ai Supabase connector in web sessions).
+- **reviewer** — read-only pre-ship check for broken builds, mobile issues, and exposed secrets; does a real phone-size browser pass when a headless Chromium is available.
+- **preview** — branch + commit + push + open a PR; hands back the actual Vercel preview URL for QA. Does NOT go live.
+- **promote** — merges the approved PR into main; Vercel deploys to production, and it verifies the deploy actually succeeded. Works from any device.
 - **new-app** — onboards a loose HTML/JSX file into a new repo app, wires in the agents + CLAUDE.md, gets it ready to preview.
+- **launch** — wires up hosting, backend, domain, and branch protection around a new repo, automating whatever this session has capabilities for (Vercel/Supabase/GitHub MCP connectors or laptop tokens) and listing exact manual steps for the rest.
+
+Agent capability is a per-session question, not a per-device one: web/cloud sessions with the GitHub, Vercel, and Supabase connectors can create repos, wire hosting, and run migrations too. The one laptop-only step is GoDaddy DNS. Agents should check what tools the session actually has rather than assuming from the device.
 
 Shipping flow: build with frontend-builder -> preview (get the preview URL) -> QA on the preview URL + run reviewer -> promote (merge -> live).
+
+Skills (also canonical in `ardieworks`, synced to app repos): **go-live** (launch checklist), **audit-app** (Lighthouse + phone walkthrough), **starting-an-app-from-chat** (prototype → repo handoff), **portfolio-status** (health sweep across every app), **fewer-prompts** (permission tuning).
 
 ## Shipping safely (preview before production)
 Never push straight to `main`. The flow is always: branch -> PR -> preview URL -> review -> merge.
@@ -99,7 +104,7 @@ On GitHub, in each repo — both settings are phone-friendly and set-once:
 
 ## Starting a new app (portable, works from any device)
 Apps often begin as a single HTML or JSX file from a chat. To bring one in:
-1. **Create the repo** — tap **"Use this template"** on `ardiejohnson/app-template` (github.com, works on phone) and name it (e.g. `moodboard`). The new repo is born with the agents + CLAUDE.md already inside. (On a laptop, the new-app agent can create the repo directly with `gh` instead.)
+1. **Create the repo** — usually the new-app agent can do this itself: with `gh` on the laptop it's one template command; in a web/cloud session with the GitHub connector it creates the private repo and copies in the app-template contents. Only if neither is available: tap **"Use this template"** on `ardiejohnson/app-template` (github.com, works on phone) and name it (e.g. `moodboard`), picking **Private**. Either way the repo starts with the agents + skills + CLAUDE.md + CI check inside.
 2. **Open Claude Code** on the new repo and give the **new-app** agent your file — it detects HTML vs JSX, scaffolds the project, builds it, and adds the app to the table above.
 3. **Wire hosting once** — import the repo into Vercel, attach the subdomain, and turn on branch protection for `main` (Vercel's web dashboard is phone-friendly).
    - **DNS is automated on the laptop.** The GoDaddy API is wired up, so from Ardie's laptop the subdomain's DNS record can be added with one command — `~/.godaddy/add-subdomain.sh <name> <cname-target>` (creates `CNAME <name> → <target>`; Vercel then issues HTTPS). **Add the domain in Vercel first** (Settings → Domains) and copy the target it shows under "DNS Change Recommended" — Vercel gives each project its own DNS host and no longer routes new domains through the old shared A record `76.76.21.21`. That record still *resolves*, so getting this wrong looks like a stuck certificate rather than a misconfiguration. Creds live in `~/.godaddy/credentials`, laptop-only and outside every git repo — never commit or move them. From a phone/web session this step is still manual in the GoDaddy dashboard.
@@ -123,8 +128,10 @@ After that it's a normal portfolio app: preview -> review -> promote, from anywh
 - Enable Row Level Security on every new Supabase table with explicit policies.
 
 ## Where ArdieWorks lives
-This file and the agents are canonical in the `ardieworks` repo (the agency HQ).
-Edit them THERE, then distribute: laptop gets them via the Claude Code plugin
-(`/plugin install ardieworks@ardieworks`); app repos get them at birth via
-`app-template`, refreshed with `scripts/sync-template.sh`. If a copy in an app
-repo disagrees with ardieworks, ardieworks wins.
+This file, the agents, and the skills are canonical in the `ardieworks` repo (the
+agency HQ). Edit them THERE, then distribute: laptop gets them via the Claude Code
+plugin (`/plugin install ardieworks@ardieworks`); app repos get them at birth via
+`app-template`, kept fresh by the `sync-template` GitHub Action (opens a PR on
+app-template whenever canonical files change on main; manual fallback:
+`scripts/sync-template.sh`). If a copy in an app repo disagrees with ardieworks,
+ardieworks wins.

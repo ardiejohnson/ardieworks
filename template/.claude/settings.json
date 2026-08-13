@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(echo:*)", "Bash(ls:*)", "Bash(cat:*)", "Bash(find:*)", "Bash(grep:*)",
+      "Bash(head:*)", "Bash(tail:*)", "Bash(wc:*)", "Bash(pwd)", "Bash(cd:*)", "Bash(tree:*)",
+      "Bash(git log:*)", "Bash(git status:*)", "Bash(git diff:*)", "Bash(git show:*)",
+      "Bash(npm:*)", "Bash(npx:*)", "Bash(gh:*)",
+      "Bash(git add:*)", "Bash(git commit:*)", "Bash(git push:*)", "Bash(git pull:*)",
+      "Bash(git checkout:*)", "Bash(git branch:*)"
+    ],
+    "deny": [
+      "Bash(sudo:*)", "Bash(git push --force:*)", "Bash(git push -f:*)",
+      "Bash(git reset --hard:*)", "Bash(rm -rf:*)", "Read(.env)", "Read(.env.*)"
+    ]
+  }
+}
