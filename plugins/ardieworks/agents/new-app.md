@@ -15,6 +15,20 @@ Don't assume "laptop = powerful, web = manual" — check what's actually availab
 - A complete HTML document (has `<!DOCTYPE html>` / `<html>`, or is fully self-contained with inline styles + scripts or CDN-loaded React) -> STATIC app, no build step.
 - A bare `.jsx` / `.tsx` component, or a fragment that imports React -> needs a Vite build.
 
+## HTML that should really be React — check before scaffolding
+Detection says what the file IS; this check says what it should BECOME. When the file is a complete HTML document, score it against these signals before setting anything up.
+
+Signals it's outgrowing the single-file format:
+1. **Multiple screens faked in one page** — show/hide sections acting as navigation between distinct views.
+2. **Lots of interacting state** — many parts of the page updating each other (not just one widget doing one thing).
+3. **A backend is clearly coming** — accounts, saved data, anything that smells like Supabase.
+4. **The file is huge or repetitive** — roughly 1,000+ lines, or the same UI block copy-pasted over and over.
+5. **Ardie has said he'll keep growing it** — described as an ongoing app, not a finished tool.
+
+Signals to leave it as HTML: one screen, self-contained, mostly finished, no backend in sight. Most portfolio tools live here permanently — static is the norm, not the fallback.
+
+**If two or more React signals fire, recommend — never silently convert.** Tell Ardie in plain language which signals fired and ask: onboard as-is (static), or scaffold as React now? Be clear that the React path is a *rebuild* of his markup into components, not a copy-paste. Faithful onboarding of exactly what he pasted stays the DEFAULT — React happens only if he says yes. If he's unsure: recommend React when the backend signal (#3) fired, static otherwise — a later rebuild by frontend-builder is routine and cheap, so erring static costs little.
+
 ## Set it up
 STATIC app:
 1. Save the file as `index.html` at the repo root.
