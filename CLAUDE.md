@@ -48,6 +48,33 @@ Non-negotiable for every `[appname].ardiejohnson.com` app — the **new-app** ag
 2. **A `DESIGN.md` at the repo root — the app's design point of view.** Who opens it, what they actually want, the one feeling, what it must NOT look like, and the one thing they must be able to do. The **app-design** skill writes it with me (five short questions) and every later UI change is judged against it. Without a stated point of view every app drifts toward the same default look — Inter on white with a blue button — which is exactly what this prevents.
 3. **A card on the apex homepage.** Add a live card for the app to the `ardiejohnson-com` repo's `index.html` (`.apps` grid). That's a separate deployed repo, so it ships through its own preview → promote flow.
 
+<!-- ardieworks:ownership -->
+## Who owns a repo's Claude config
+
+Everything under `.claude/` — agents, skills, hooks, and the `hooks` block of
+`settings.json` — is **owned by this repo (ArdieWorks HQ)**. Don't edit those
+inside an app repo; the next sync overwrites the change.
+
+The pipe runs one way:
+
+```
+ardieworks HQ  --sync-template Action-->  app-template  --sync-agents.sh-->  17 app repos
+```
+
+To change an agent, skill, or hook: edit it here, let the Action carry it to
+`app-template`, then run `sync-agents.sh`. A session working inside an app repo
+owns that repo's **application code**; `.claude/` travels down from HQ.
+
+Two escape hatches: put `ardieworks-sync: skip` in a file to pin it in one repo,
+and note that `sync-agents.sh` only ever merges the `hooks` key of
+`settings.json` and the marked block of `CLAUDE.md` — per-repo permissions and
+app-specific docs are never touched.
+
+Targets are **discovered, not hardcoded**: every non-archived `ardiejohnson`
+repo containing `.claude/agents/`, minus the exclude list. Two hand-maintained
+lists are what let the portfolio drift into three different states.
+<!-- /ardieworks:ownership -->
+
 ## The agents
 Canonical in the `ardieworks` repo under `plugins/ardieworks/agents/`; app repos carry a synced copy in `.claude/agents/`. Delegate to them by role:
 - **frontend-builder** — all UI and client-side feature work. Reads `DESIGN.md` and runs the **app-design** skill before styling anything.
