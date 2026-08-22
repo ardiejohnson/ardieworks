@@ -15,13 +15,20 @@ The app list is the repos table in the ardieworks CLAUDE.md (skip `auction-app` 
 3. **Runtime errors** (Vercel MCP `get_runtime_errors`): anything crashing in production that a green build hides.
 4. **Open PRs** (GitHub tools, per repo via `add_repo` if needed): anything sitting unmerged — previews Ardie may have forgotten to promote, or stale branches. Include age.
 5. **Supabase advisors** (Supabase MCP `get_advisors`, security + performance) for the apps with backends (`artcoach`, `legacy`, and any new ones): unfixed security advisories are automatic "needs attention" items.
-6. **Analytics glance** (Vercel MCP `get_web_analytics`, if available): anything unusual worth a sentence — traffic spike, dead app.
+6. **Apex homepage drift** — the one nothing else owns. Fetch `https://ardiejohnson.com` and compare it against reality:
+   - **Is every live app listed?** Diff the app cards on the page against the repos actually deployed. A shipped app missing from the homepage is invisible to everyone who isn't Ardie.
+   - **Is the count right?** The hero, the status bar, the filter, and the `<title>` all state how many apps are live. If any of them disagrees with the real number, that's a "needs attention" item — the count is the most persuasive fact on the page, and a wrong one reads as carelessness to exactly the audience it's aimed at.
+   - **Does every card link resolve?** A card pointing at a dead subdomain is worse than no card.
+   Fixes here go out as a PR on `ardiejohnson-com` like any other change.
+7. **Analytics glance** (Vercel MCP `get_web_analytics`, if available): anything unusual worth a sentence — traffic spike, dead app.
 
 ## The report
 Keep it phone-readable:
 1. **Scoreboard table** — one row per app: Live ✅/❌ · Last deploy ✅/❌ · Open PRs (count) · Notes (one phrase max).
 2. **Needs attention** — ranked list, each item with the plain-language problem and the suggested next step. Empty? Say "all quiet" and stop.
 3. **Suggested fixes** — only for real problems, each as an offer ("want me to fix X? It'd go out as a preview PR on <repo>"), never as work already started.
+
+When something is broken rather than merely stale — a failed deploy, runtime errors, an app returning 5xx — hand it to the **triage** agent rather than guessing at the cause here. This skill's job is to notice; triage's job is to diagnose.
 
 ## Running it on a schedule
 This skill works as a recurring routine (e.g. weekday mornings) in sessions that support scheduled triggers. When run on a schedule: if everything is green, stay quiet or one line — don't generate a daily wall of ✅. Only surface a report when something actually needs attention.
