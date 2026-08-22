@@ -20,12 +20,15 @@ mkdir -p "$TEMPLATE/.claude/agents"
 cp "$HQ"/plugins/ardieworks/agents/*.md "$TEMPLATE/.claude/agents/"
 cp "$HQ/CLAUDE.md" "$TEMPLATE/CLAUDE.md"
 
-# Skills (previously missed — web sessions in app repos need these too)
+# Skills (web sessions in app repos need these too). Copy each skill directory
+# whole — a skill may carry references/ and assets/ alongside SKILL.md, and
+# copying only SKILL.md would silently ship it with its supporting files missing.
 mkdir -p "$TEMPLATE/.claude/skills"
 for skill in "$HQ"/plugins/ardieworks/skills/*/; do
+  [ -d "$skill" ] || continue
   name="$(basename "$skill")"
-  mkdir -p "$TEMPLATE/.claude/skills/$name"
-  cp "$skill"SKILL.md "$TEMPLATE/.claude/skills/$name/SKILL.md"
+  rm -rf "$TEMPLATE/.claude/skills/$name"
+  cp -R "$skill" "$TEMPLATE/.claude/skills/$name"
 done
 
 # Permissions allowlist (fewer prompts in template-born repos)

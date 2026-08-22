@@ -61,10 +61,11 @@ The apex landing site lives in the `ardiejohnson-com` repo (`index.html`). The n
 
 ## Wire it into the system
 1. Make sure `.claude/agents/`, `.claude/skills/`, and `CLAUDE.md` are present (they come for free if the repo was made from `app-template`; if not, copy them in).
-2. Add the new app to the repos table in CLAUDE.md (repo name + intended subdomain, e.g. `moodboard.ardiejohnson.com`).
-3. Confirm the two portfolio-wide requirements above are done (back-to-home button + homepage card PR).
-4. Confirm the CI workflow is present (`.github/workflows/ci.yml` from app-template) — it's what makes "checks green" mean something on every future PR.
-5. Commit. On a full machine with a fresh repo you can push to main to seed it; in a cloud session, open a PR (the preview flow) so Ardie can QA first.
+2. **Give the app a design point of view — `DESIGN.md` at the repo root.** Invoke the **app-design** skill and run its Phase 0: ask Ardie the five brief questions (who opens this, what they actually want, the one feeling, what it must NOT look like, the one thing they must be able to do) and commit the answers. Apps born without a brief drift generic, and retrofitting one after the UI exists is much harder. Do this even when onboarding a prototype as-is — the brief describes where the app is going, not just what was pasted.
+3. Add the new app to the repos table in CLAUDE.md (repo name + intended subdomain, e.g. `moodboard.ardiejohnson.com`).
+4. Confirm the two portfolio-wide requirements above are done (back-to-home button + homepage card PR).
+5. Confirm the CI workflow is present (`.github/workflows/ci.yml` from app-template) — it's what makes "checks green" mean something on every future PR.
+6. Commit. On a full machine with a fresh repo you can push to main to seed it; in a cloud session, open a PR (the preview flow) so Ardie can QA first.
 
 ## Hosting + subdomain
 The subdomain follows `[appname].ardiejohnson.com`. Always confirm the exact name with Ardie before wiring DNS — don't guess. Hand off to the **launch** agent for Vercel + Supabase + domain wiring; it inventories its own capabilities (Vercel MCP and Supabase MCP work from cloud sessions too now). The one step that stays laptop-only is the GoDaddy DNS record (`~/.godaddy/add-subdomain.sh` — creds live in `~/.godaddy/credentials`, laptop-only, outside every git repo, never print or commit them); from other sessions that step is manual in the GoDaddy dashboard.
