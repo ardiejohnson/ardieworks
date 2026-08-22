@@ -43,13 +43,14 @@ When in doubt about a subdomain, ask me rather than guessing — DNS is easy to 
 - **Backend (only when needed):** Supabase. Most apps are client-side only.
 
 ## Every app ships with these (portfolio defaults)
-Non-negotiable for every `[appname].ardiejohnson.com` app — the **new-app** agent adds them automatically, and any new app should be checked for both before it goes live:
+Non-negotiable for every `[appname].ardiejohnson.com` app — the **new-app** agent adds them automatically, and any new app should be checked for all three before it goes live:
 1. **Back-to-home button, upper-left.** The standard MoodCast pill — white `#FFFFFF`, 1px border `#E3E7EC`, dark ink `#1B2330`, rounded-full, `← ardiejohnson.com`. Place it in a strip at the very top of the page, *above* the app's own header — in normal flow, NOT `position:fixed` (a fixed button overlaps any app that has its own top bar). Keeps navigation consistent across the whole portfolio. (React: a `HomeButton` component; static: an anchor at the top of `<body>`. Hide it in print with `@media print`.)
-2. **A card on the apex homepage.** Add a live card for the app to the `ardiejohnson-com` repo's `index.html` (`.apps` grid). That's a separate deployed repo, so it ships through its own preview → promote flow.
+2. **A `DESIGN.md` at the repo root — the app's design point of view.** Who opens it, what they actually want, the one feeling, what it must NOT look like, and the one thing they must be able to do. The **app-design** skill writes it with me (five short questions) and every later UI change is judged against it. Without a stated point of view every app drifts toward the same default look — Inter on white with a blue button — which is exactly what this prevents.
+3. **A card on the apex homepage.** Add a live card for the app to the `ardiejohnson-com` repo's `index.html` (`.apps` grid). That's a separate deployed repo, so it ships through its own preview → promote flow.
 
 ## The agents
 Canonical in the `ardieworks` repo under `plugins/ardieworks/agents/`; app repos carry a synced copy in `.claude/agents/`. Delegate to them by role:
-- **frontend-builder** — all UI and client-side feature work.
+- **frontend-builder** — all UI and client-side feature work. Reads `DESIGN.md` and runs the **app-design** skill before styling anything.
 - **backend-supabase** — schema, migrations, RLS, auth, storage (via Supabase MCP — laptop config or the claude.ai Supabase connector in web sessions).
 - **reviewer** — read-only pre-ship check for broken builds, mobile issues, and exposed secrets; does a real phone-size browser pass when a headless Chromium is available.
 - **preview** — branch + commit + push + open a PR; hands back the actual Vercel preview URL for QA. Does NOT go live.
@@ -120,6 +121,7 @@ After that it's a normal portfolio app: preview -> review -> promote, from anywh
 ## Hard rules
 - **Always give me a preview link for QA — automatically, without asking.** Any user-facing change ends by running the preview agent and pasting the clickable preview URL. Never ask permission to open a preview; never leave me to request the link.
 - **Never push directly to `main`** — always go through a branch, a PR, and a merge.
+- **Never design without a point of view.** Read `DESIGN.md` and run the **app-design** skill before UI work — messaging first (what this is, whose problem it solves, what to tap first), then craft. If there's no `DESIGN.md` yet, write it with me first.
 - **Never deploy a broken build.** Run `npm run build` first (skip for static single-file apps).
 - **New repos are created private** (see visibility policy above).
 - **Never commit secrets.** Client apps use the Supabase anon/public key only — never the service-role key.

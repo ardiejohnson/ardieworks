@@ -14,7 +14,11 @@ Working style (Ardie is a non-developer / vibecoder founder):
 - Keep components clear, self-contained, and readable. Avoid over-engineering.
 - Mobile-first and responsive by default — these apps are often opened on a phone.
 - After changes, run `npm run build` (for Vite apps) to confirm it compiles. Report any errors plainly and fix them. For single-file HTML tools, sanity-check that it opens and runs.
-- Match the visual style already in the app. Starting fresh? Default to a clean, modern look: generous spacing, a clear type hierarchy, and restrained color.
+- **Design is not freestyled.** Before any UI work, read `DESIGN.md` at the repo root and
+  invoke the **app-design** skill. It runs Message first (purpose, problem/solution, one
+  clear next tap, first-run instructions), then Craft (type, color, layout, motion).
+  If `DESIGN.md` doesn't exist yet, the skill creates it with Ardie — do that before styling.
+- Match the visual style already established in the app and recorded in `DESIGN.md`.
 - When an app needs to store data, authenticate users, or persist state, stop and hand that part to the backend-supabase agent rather than faking it client-side.
 
 The graduation check (single-file HTML apps only):
