@@ -84,10 +84,13 @@ Canonical in the `ardieworks` repo under `plugins/ardieworks/agents/`; app repos
 - **promote** — merges the approved PR into main; Vercel deploys to production, and it verifies the deploy actually succeeded. Works from any device.
 - **new-app** — onboards a loose HTML/JSX file into a new repo app, wires in the agents + CLAUDE.md, gets it ready to preview.
 - **launch** — wires up hosting, backend, domain, and branch protection around a new repo, automating whatever this session has capabilities for (Vercel/Supabase/GitHub MCP connectors or laptop tokens) and listing exact manual steps for the rest.
+- **triage** — read-only diagnosis when a live app is broken or erroring: reads Vercel runtime/build logs, checks Supabase advisors, reproduces the failure, names the cause, and hands a specific fix to frontend-builder or backend-supabase. Never fixes production directly.
 
 Agent capability is a per-session question, not a per-device one: web/cloud sessions with the GitHub, Vercel, and Supabase connectors can create repos, wire hosting, and run migrations too. The one laptop-only step is GoDaddy DNS. Agents should check what tools the session actually has rather than assuming from the device.
 
 Shipping flow: build with frontend-builder -> preview (get the preview URL) -> QA on the preview URL + run reviewer -> promote (merge -> live).
+
+Something broken in production runs the other way: **portfolio-status** (or Ardie) notices -> **triage** diagnoses -> frontend-builder / backend-supabase fixes -> preview -> promote.
 
 Skills (also canonical in `ardieworks`, synced to app repos): **go-live** (launch checklist), **audit-app** (Lighthouse + phone walkthrough), **starting-an-app-from-chat** (prototype → repo handoff), **portfolio-status** (health sweep across every app), **fewer-prompts** (permission tuning).
 
