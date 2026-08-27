@@ -1,0 +1,11 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html", "x": 0, "y": 0, "w": 920, "h": 830, "title": "Direction A — Chatty Yak (lead)" },
+    { "file": "DirectionB.dc.html", "x": 1040, "y": 0, "w": 460, "h": 530, "title": "Direction B — Sturdy Yak" },
+    { "file": "DirectionC.dc.html", "x": 1040, "y": 620, "w": 460, "h": 530, "title": "Direction C — Summit Yak" }
+  ],
+  "annotations": [
+    { "id": "how-to-pick", "x": 0, "y": -150, "w": 560, "text": "Three yak directions for TaxYak. A (big sheet) is my lead - a yak that yaks, in a speech bubble. B and C are quick sketches for contrast. Try the Brand color chip above sheet A, then tell Claude which direction to build out - mixing is fine (e.g. A's face on B's badge)." }
+  ],
+  "launch": { "view": "canvas" }
+}
