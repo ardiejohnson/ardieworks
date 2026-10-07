@@ -26,11 +26,14 @@ One repo per deployed app. Repo names sometimes carry an `-app` suffix that the 
 | `legacy`            | legacy.ardiejohnson.com    | Family memoir archive; password-gated, Supabase + `archive` edge function |
 | `switch`            | switch.ardiejohnson.com    | Marketing site for a smart-glass product; quote form via Vercel `/api` + Resend |
 | `los-oviedo-garage` | **losoviedo.com** (own apex) | Bilingual (EN/ES) marketing site for a used car dealership + service garage |
+| `dashthing`         | **dashthing.com** (own apex, Porkbun) | dashThing command center (Dash · Eco · Op Tools); Supabase `dashthing-dev`; `www` 308-redirects to the apex. Renamed from `dashidoo` on 2026-10-07 |
 
 Note: `auction-app` is an older project, NOT deployed under this domain — ignore it.
-Note: `los-oviedo-garage` is the one app NOT on an `ardiejohnson.com` subdomain — it's
-a client-facing site, so it lives on its own domain, `losoviedo.com` (registered in the
-same GoDaddy account). This is deliberate; don't "fix" it back to a subdomain. The old
+Note: `los-oviedo-garage` and `dashthing` are the two apps NOT on an `ardiejohnson.com`
+subdomain. One is a client-facing site and the other a product with its own brand, so each
+lives on its own domain: `losoviedo.com` (registered in the same GoDaddy account) and
+`dashthing.com` (registered at Porkbun; nameservers point at Vercel). This is deliberate;
+don't "fix" them back to subdomains. The old
 `losoviedo.ardiejohnson.com` and `www.losoviedo.com` both 308-redirect to the apex via
 `redirects()` in `next.config.mjs` — keep those rules so shared links never die.
 When in doubt about a subdomain, ask me rather than guessing — DNS is easy to get wrong.
