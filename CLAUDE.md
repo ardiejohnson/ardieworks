@@ -22,7 +22,7 @@ One repo per deployed app. Repo names sometimes carry an `-app` suffix that the 
 | `svg-maker-app`     | svg-maker.ardiejohnson.com | repo has `-app`, subdomain doesn't                             |
 | `arcade`            | arcade.ardiejohnson.com    | Multi-game site; games live at sub-paths, e.g. /hoarder-patrol |
 | `artcoach`          | artcoach.ardiejohnson.com  | AI art critique coach; Vercel `/api` + Supabase (see README) |
-| `closr`             | closr.ardiejohnson.com     | Overnight shutdown checklist w/ photo & video proof (IndexedDB) |
+| `closr`             | closr.ardiejohnson.com     | closrThing: staff checklists for opening, closing and in between, w/ photo & video proof (IndexedDB) |
 | `legacy`            | legacy.ardiejohnson.com    | Family memoir archive; password-gated, Supabase + `archive` edge function |
 | `switch`            | switch.ardiejohnson.com    | Marketing site for a smart-glass product; quote form via Vercel `/api` + Resend |
 | `los-oviedo-garage` | **losoviedo.com** (own apex) | Bilingual (EN/ES) marketing site for a used car dealership + service garage |
